@@ -43,7 +43,7 @@
   <!-- メインレイアウト -->
   <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
 
-    <!-- 【LINEログインカード】（最初からログインボタンを100%強制表示します） -->
+    <!-- 【LINEログインカード】 -->
     <div id="auth-status-card" class="bg-white/15 backdrop-blur-xl p-5 rounded-2xl border border-white/30 shadow-lg animate-card">
       <div id="status-card-inner" class="flex flex-col sm:flex-row items-center justify-between gap-4 animate-card">
         <div class="text-center sm:text-left space-y-1">
@@ -131,7 +131,17 @@
   </div>
 
   <script>
-    // 必要情報を設定済み
+    // 【URL自動自己修復セキュリティ】
+    // 1. スラッシュの抜け（.../jikanwarietsuran）を自動検知して .../jikanwarietsuran/ に自動遷移
+    if (window.location.origin === 'https://projector0116-lab.github.io' && window.location.pathname === '/jikanwarietsuran') {
+      window.location.replace('https://projector0116-lab.github.io/jikanwarietsuran/');
+    }
+    // 2. 末尾に index.html がついてしまっている場合も自動検知して取り除き、正しいアドレスに自動遷移
+    if (window.location.pathname.endsWith('/index.html')) {
+      const cleanPath = window.location.pathname.replace('/index.html', '/');
+      window.location.replace(window.location.origin + cleanPath);
+    }
+
     const LIFF_ID = '2010391463-HL6C045X';
     const SERVICE_ID = 'class1-3'; 
     const API_KEY = 'XBvrlGnCscCST3Pt6CApexkkbuRJNCG8ZCmq'; 
@@ -163,15 +173,12 @@
       try {
         await liff.init({ liffId: LIFF_ID });
         if (liff.isLoggedIn()) {
-          // ログイン済みの場合は、カードを「ユーザープロフィール」に自動書き換えします
           handleLoggedIn();
         } else {
-          // 未ログインの場合は何もしません（HTMLに書いてあるログインボタンがそのまま表示され続けます）
           init();
         }
       } catch (err) {
         console.error('LIFF初期化失敗:', err);
-        // エラー（CodePenや未公開）が起きても、ログインボタンは絶対に隠さずに残します
         init();
       }
     }
