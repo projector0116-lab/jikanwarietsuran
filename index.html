@@ -131,15 +131,17 @@
   </div>
 
   <script>
-    // 【URL自動自己修復セキュリティ】
-    // 1. スラッシュの抜け（.../jikanwarietsuran）を自動検知して .../jikanwarietsuran/ に自動遷移
-    if (window.location.origin === 'https://projector0116-lab.github.io' && window.location.pathname === '/jikanwarietsuran') {
-      window.location.replace('https://projector0116-lab.github.io/jikanwarietsuran/');
-    }
-    // 2. 末尾に index.html がついてしまっている場合も自動検知して取り除き、正しいアドレスに自動遷移
-    if (window.location.pathname.endsWith('/index.html')) {
-      const cleanPath = window.location.pathname.replace('/index.html', '/');
-      window.location.replace(window.location.origin + cleanPath);
+    // 【URL自動自己修復セキュリティ（本番環境のみ稼働）】
+    if (window.location.origin === 'https://projector0116-lab.github.io') {
+      // 1. スラッシュの抜け（.../jikanwarietsuran）を自動検知して自動遷移
+      if (window.location.pathname === '/jikanwarietsuran') {
+        window.location.replace('https://projector0116-lab.github.io/jikanwarietsuran/');
+      }
+      // 2. 末尾に index.html がついてしまっている場合も自動検知して自動遷移
+      if (window.location.pathname.endsWith('/index.html')) {
+        const cleanPath = window.location.pathname.replace('/index.html', '/');
+        window.location.replace(window.location.origin + cleanPath);
+      }
     }
 
     const LIFF_ID = '2010391463-HL6C045X';
@@ -334,7 +336,6 @@
           <div class="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-2 shadow-lg animate-card relative group overflow-hidden">
             <img src="${imageUrl}" alt="${currentWeek}の時間割" class="w-full h-auto object-contain max-h-[500px] rounded-lg" onclick="window.open('${imageUrl}')">
             
-            <!-- iOSシステムUI風の半透明ガラスダウンロードボタン -->
             <button onclick="downloadImage('${imageUrl}', '${currentWeek}_時間割.png', this)" 
                     class="absolute bottom-4 right-4 bg-white/40 hover:bg-white/70 backdrop-blur-md border border-white/30 shadow-lg rounded-full w-10 h-10 flex items-center justify-center transition-all duration-200 active:scale-90"
                     title="画像をダウンロード">
@@ -403,23 +404,6 @@
       });
     }
 
-    // 今週・先週切り替えの関数
-    function switchWeek(week) {
-      currentWeek = week;
-      const btnThis = document.getElementById('btn-this-week');
-      const btnLast = document.getElementById('btn-last-week');
-
-      if (week === '今週') {
-        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
-        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
-      } else {
-        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
-        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
-      }
-      renderTimetable();
-    }
-
-    // LIFFの初期化から動作を開始します
     initLiff();
   </script>
 </body>
