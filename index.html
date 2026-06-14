@@ -50,7 +50,7 @@
           <h3 class="font-bold text-sm text-stone-900">LINEログイン</h3>
           <p class="text-xs text-stone-500">ログインすると、これまでの通算ログイン回数がカウントされます。</p>
         </div>
-        <button onclick="loginWithLine()" class="w-full sm:w-auto bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
+        <button onclick="loginWithLine()" class="w-full sm:w-auto bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
           <i class="fa-brands fa-line text-base"></i> LINEでログインする
         </button>
       </div>
@@ -92,7 +92,7 @@
         </p>
         <div class="pt-2">
           <!-- LINEを開くボタン -->
-          <a id="line-link" href="https://lin.ee/YBRpoGH" target="_blank" class="inline-flex items-center gap-2 bg-stone-900/70 hover:bg-stone-850/70 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
+          <a id="line-link" href="#" target="_blank" class="inline-flex items-center gap-2 bg-stone-900/70 hover:bg-stone-850/70 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
             <i class="fa-brands fa-line text-sm"></i> LINE版をひらく
           </a>
         </div>
@@ -100,6 +100,48 @@
     </section>
 
   </main>
+
+  <!-- ログインカレンダーモーダル（リキッドグラス仕様） -->
+  <div id="calendar-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white/25 backdrop-blur-2xl rounded-2xl w-full max-w-sm flex flex-col shadow-2xl border border-white/45 overflow-hidden animate-card">
+      
+      <!-- カレンダーのヘッダー -->
+      <div class="bg-white/25 border-b border-white/20 px-5 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2.5">
+          <i class="fa-solid fa-calendar-days silhouette-icon"></i> ログインカレンダー
+        </h3>
+        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition active:scale-90">
+          <i class="fa-solid fa-xmark text-lg text-stone-600"></i>
+        </button>
+      </div>
+
+      <!-- カレンダーコンテンツ部分 -->
+      <div class="p-5 space-y-4">
+        <div class="flex justify-between items-center px-1">
+          <span id="calendar-title" class="font-extrabold text-sm text-stone-850">取得中...</span>
+          <span class="text-[10px] text-emerald-600 font-extrabold bg-white/30 px-2.5 py-0.5 rounded border border-white/30 shadow-sm">スタンプカード</span>
+        </div>
+
+        <!-- 曜日 -->
+        <div class="grid grid-cols-7 text-center text-[10px] font-bold text-stone-400 border-b border-white/20 pb-2">
+          <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+        </div>
+
+        <!-- 日付グリッド -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-y-1 text-center font-bold">
+          <!-- JSでレンダリングします -->
+        </div>
+      </div>
+
+      <!-- カレンダーのフッター -->
+      <div class="bg-white/25 border-t border-white/20 px-5 py-3 text-right">
+        <button onclick="closeCalendarModal()" class="bg-stone-200/50 hover:bg-stone-300/60 text-stone-800 font-bold text-xs px-4 py-2 rounded-lg transition active:scale-95">
+          閉じる
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- 過去の履歴モーダル -->
   <div id="history-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -142,7 +184,7 @@
       }
     }
 
-    // 正しいLIFF IDに修正済み
+    // 正しいLIFF ID
     const LIFF_ID = '2010391463-HL6C04SX';
 
     const SERVICE_ID = 'class1-3'; 
@@ -155,7 +197,6 @@
 
     // LINEログイン処理
     function loginWithLine() {
-      // リダイレクト先を今開いているURL（スラッシュ付きの正しいURL）に指定してログイン
       const redirectUri = window.location.origin + window.location.pathname;
       liff.login({ redirectUri: redirectUri });
     }
@@ -192,13 +233,19 @@
       try {
         const profile = await liff.getProfile();
 
-        // ログイン回数の記録
-        let count = parseInt(localStorage.getItem('line_login_count') || '0', 10);
-        if (!sessionStorage.getItem('logged_in_this_session')) {
-          count += 1;
-          localStorage.setItem('line_login_count', count.toString());
-          sessionStorage.setItem('logged_in_this_session', 'true');
+        // 【一日一回ログイン＆回数記録処理】
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+        let loginDates = JSON.parse(localStorage.getItem('line_login_dates') || '[]');
+        
+        // 今日まだログイン記録がなければ配列に追加して保存
+        if (!loginDates.includes(todayStr)) {
+          loginDates.push(todayStr);
+          localStorage.setItem('line_login_dates', JSON.stringify(loginDates));
         }
+
+        const count = loginDates.length; // 重複のない累計ログイン日数
 
         const statusCard = document.getElementById('auth-status-card');
         if (statusCard) {
@@ -212,8 +259,14 @@
                 </div>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-xs text-stone-600 font-extrabold bg-white/20 px-3.5 py-1.5 rounded-full border border-white/25 shadow-sm">ログイン ${count}回目</span>
-                <button onclick="logoutWithLine()" class="text-[10px] text-stone-400 hover:text-stone-600 font-bold transition">ログアウト</button>
+                <span class="text-xs text-stone-600 font-extrabold bg-white/20 px-3.5 py-1.5 rounded-full border border-white/25 shadow-sm">ログイン ${count}日目</span>
+                <div class="flex items-center gap-2">
+                  <button onclick="openCalendarModal()" class="text-[10px] text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition active:scale-95">
+                    <i class="fa-solid fa-calendar-days"></i> カレンダー
+                  </button>
+                  <span class="text-stone-300 text-[10px]">|</span>
+                  <button onclick="logoutWithLine()" class="text-[10px] text-stone-400 hover:text-stone-600 font-bold transition">ログアウト</button>
+                </div>
               </div>
             </div>
           `;
@@ -224,6 +277,73 @@
       }
 
       init();
+    }
+
+    // ログインカレンダーのレンダリング
+    function renderCalendar() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth(); 
+      
+      const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+      document.getElementById('calendar-title').innerText = `${year}年 ${monthNames[month]}`;
+
+      const firstDayIndex = new Date(year, month, 1).getDay(); 
+      const lastDay = new Date(year, month + 1, 0).getDate(); 
+
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+
+      // ローカルストレージからログイン日付リストを取得
+      const loginDates = JSON.parse(localStorage.getItem('line_login_dates') || '[]');
+
+      // 月初の余白セルをレンダリング
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = "py-2";
+        grid.appendChild(emptyCell);
+      }
+
+      // 日付のレンダリング
+      for (let day = 1; day <= lastDay; day++) {
+        const cell = document.createElement('div');
+        cell.className = "py-2 flex flex-col items-center justify-center relative select-none";
+        
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasLoggedIn = loginDates.includes(dateStr);
+
+        if (hasLoggedIn) {
+          // ログイン日には美しいサークル（○）のスタンプを表示します
+          cell.innerHTML = `
+            <span class="text-xs font-bold text-stone-900 z-10">${day}</span>
+            <div class="absolute w-7 h-7 rounded-full border-2 border-emerald-500/70 bg-emerald-500/10 flex items-center justify-center"></div>
+          `;
+        } else {
+          cell.innerHTML = `
+            <span class="text-xs text-stone-500">${day}</span>
+          `;
+        }
+        grid.appendChild(cell);
+      }
+    }
+
+    // カレンダーモーダルを開く
+    function openCalendarModal() {
+      const modal = document.getElementById('calendar-modal');
+      if (modal) {
+        renderCalendar();
+        modal.style.display = 'flex';
+        document.body.classList.add('overflow-hidden');
+      }
+    }
+
+    // カレンダーモーダルを閉じる
+    function closeCalendarModal() {
+      const modal = document.getElementById('calendar-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('overflow-hidden');
+      }
     }
 
     // ポップアップを開く
@@ -407,23 +527,6 @@
       });
     }
 
-    // 今週・先週切り替えの関数
-    function switchWeek(week) {
-      currentWeek = week;
-      const btnThis = document.getElementById('btn-this-week');
-      const btnLast = document.getElementById('btn-last-week');
-
-      if (week === '今週') {
-        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
-        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
-      } else {
-        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
-        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
-      }
-      renderTimetable();
-    }
-
-    // LIFFの初期化から動作を開始します
     initLiff();
   </script>
 </body>
