@@ -97,8 +97,8 @@
           LINEから時間割の自動応答機能や、最新のお知らせの通知を受け取りたい場合は、以下のボタンから公式アカウントにアクセスしてください。
         </p>
         <div class="pt-2">
-          <!-- LINEを開くボタン -->
-          <a id="line-link" href="#" target="_blank" class="inline-flex items-center gap-2 bg-stone-900/70 hover:bg-stone-850/70 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
+          <!-- LINEを開くボタン（直接LINEアプリを呼び出すディープリンクを設定済み） -->
+          <a id="line-link" href="https://line.me/R/ti/p/@613murqr" target="_blank" class="inline-flex items-center gap-2 bg-stone-900/70 hover:bg-stone-850/70 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
             <i class="fa-brands fa-line text-sm"></i> LINE版をひらく
           </a>
         </div>
@@ -141,7 +141,7 @@
 
       <!-- カレンダーのフッター -->
       <div class="bg-white/25 border-t border-white/20 px-5 py-3 text-right">
-        <button onclick="closeCalendarModal()" class="bg-stone-200/50 hover:bg-stone-300/60 text-stone-800 font-bold text-xs px-4 py-2 rounded-lg transition active:scale-95">
+        <button onclick="closeHistoryModal()" class="bg-stone-200/50 hover:bg-stone-300/60 text-stone-800 font-bold text-xs px-4 py-2 rounded-lg transition active:scale-95">
           閉じる
         </button>
       </div>
@@ -179,7 +179,7 @@
   </div>
 
   <script>
-    // 【URL自動自己修復セキュリティ（本番環境のみ稼働・400エラーを自動で防ぎます）】
+    // 【URL自動自己修復セキュリティ（本番環境のみ稼働）】
     if (window.location.origin === 'https://projector0116-lab.github.io') {
       if (window.location.pathname === '/jikanwarietsuran') {
         window.location.replace('https://projector0116-lab.github.io/jikanwarietsuran/');
@@ -194,7 +194,9 @@
     const LIFF_ID = '2010391463-HL6C04SX';
     const SERVICE_ID = 'class1-3'; 
     const API_KEY = 'XBvrlGnCscCST3Pt6CApexkkbuRJNCG8ZCmq'; 
-    const LINE_ACCOUNT_URL = 'https://lin.ee/YBRpoGH';
+    
+    // ディープリンク版のLINE公式アカウントURL
+    const LINE_ACCOUNT_URL = 'https://line.me/R/ti/p/@613murqr';
 
     let timetableData = {};
     let announcementsData = [];
@@ -202,7 +204,6 @@
 
     // LINEログイン処理
     function loginWithLine() {
-      // リダイレクト先を今開いているURL（スラッシュ付きの正しいURL）に指定してログイン
       const redirectUri = window.location.origin + window.location.pathname;
       liff.login({ redirectUri: redirectUri });
     }
@@ -245,13 +246,12 @@
 
         let loginDates = JSON.parse(localStorage.getItem('line_login_dates') || '[]');
         
-        // 今日まだログイン記録がなければ配列に追加して保存
         if (!loginDates.includes(todayStr)) {
           loginDates.push(todayStr);
           localStorage.setItem('line_login_dates', JSON.stringify(loginDates));
         }
 
-        const count = loginDates.length; // 重複のない累計ログイン日数
+        const count = loginDates.length; 
 
         const statusCard = document.getElementById('auth-status-card');
         if (statusCard) {
@@ -300,17 +300,14 @@
       const grid = document.getElementById('calendar-grid');
       grid.innerHTML = '';
 
-      // ローカルストレージからログイン日付リストを取得
       const loginDates = JSON.parse(localStorage.getItem('line_login_dates') || '[]');
 
-      // 月初の余白セルをレンダリング
       for (let i = 0; i < firstDayIndex; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.className = "py-2";
         grid.appendChild(emptyCell);
       }
 
-      // 日付のレンダリング
       for (let day = 1; day <= lastDay; day++) {
         const cell = document.createElement('div');
         cell.className = "py-2 flex flex-col items-center justify-center relative select-none";
@@ -319,7 +316,6 @@
         const hasLoggedIn = loginDates.includes(dateStr);
 
         if (hasLoggedIn) {
-          // ログイン日には美しいサークル（○）のスタンプを表示します
           cell.innerHTML = `
             <span class="text-xs font-bold text-stone-900 z-10">${day}</span>
             <div class="absolute w-7 h-7 rounded-full border-2 border-emerald-500/70 bg-emerald-500/10 flex items-center justify-center"></div>
@@ -333,7 +329,6 @@
       }
     }
 
-    // カレンダーモーダルを開く
     function openCalendarModal() {
       const modal = document.getElementById('calendar-modal');
       if (modal) {
@@ -343,7 +338,6 @@
       }
     }
 
-    // カレンダーモーダルを閉じる
     function closeCalendarModal() {
       const modal = document.getElementById('calendar-modal');
       if (modal) {
@@ -352,7 +346,6 @@
       }
     }
 
-    // ポップアップを開く
     function openHistoryModal() {
       const modal = document.getElementById('history-modal');
       if (modal) {
@@ -361,7 +354,6 @@
       }
     }
 
-    // ポップアップを閉じる
     function closeHistoryModal() {
       const modal = document.getElementById('history-modal');
       if (modal) {
@@ -370,7 +362,6 @@
       }
     }
 
-    // 画像保存処理
     async function downloadImage(url, filename, btnElement) {
       if (!url) return;
       
@@ -402,6 +393,11 @@
     }
 
     async function init() {
+      const lineLink = document.getElementById('line-link');
+      if (lineLink) {
+        lineLink.href = LINE_ACCOUNT_URL;
+      }
+
       const headers = {
         'X-MICROCMS-API-KEY': API_KEY
       };
@@ -464,7 +460,6 @@
           <div class="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-2 shadow-lg animate-card relative group overflow-hidden">
             <img src="${imageUrl}" alt="${currentWeek}の時間割" class="w-full h-auto object-contain max-h-[500px] rounded-lg" onclick="window.open('${imageUrl}')">
             
-            <!-- iOSシステムUI風の半透明ガラスダウンロードボタン -->
             <button onclick="downloadImage('${imageUrl}', '${currentWeek}_時間割.png', this)" 
                     class="absolute bottom-4 right-4 bg-white/40 hover:bg-white/70 backdrop-blur-md border border-white/30 shadow-lg rounded-full w-10 h-10 flex items-center justify-center transition-all duration-200 active:scale-90"
                     title="画像をダウンロード">
@@ -533,6 +528,23 @@
       });
     }
 
+    // 今週・先週切り替えの関数
+    function switchWeek(week) {
+      currentWeek = week;
+      const btnThis = document.getElementById('btn-this-week');
+      const btnLast = document.getElementById('btn-last-week');
+
+      if (week === '今週') {
+        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
+        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
+      } else {
+        btnThis.className = "px-3 py-1.5 rounded-md font-bold transition text-stone-600 hover:text-stone-800";
+        btnLast.className = "px-3 py-1.5 rounded-md font-bold transition bg-stone-900/70 border border-white/20 text-white shadow-sm";
+      }
+      renderTimetable();
+    }
+
+    // LIFFの初期化から動作を開始します
     initLiff();
   </script>
 </body>
