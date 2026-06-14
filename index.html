@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クラス時間割 ＆ 掲示板</title>
+  
+  <!-- 【ファビコン設定】ブラウザのタブに表示されるアイコン -->
+  <link rel="icon" href="./icon.png" type="image/png">
+  <!-- 【スマホアイコン設定】ホーム画面に追加したときにアプリ風に表示されるアイコン -->
+  <link rel="apple-touch-icon" href="./icon.png">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- LINEログイン用のSDK読み込み -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -184,9 +190,8 @@
       }
     }
 
-    // 正しいLIFF ID
+    // 設定項目
     const LIFF_ID = '2010391463-HL6C04SX';
-
     const SERVICE_ID = 'class1-3'; 
     const API_KEY = 'XBvrlGnCscCST3Pt6CApexkkbuRJNCG8ZCmq'; 
     const LINE_ACCOUNT_URL = 'https://lin.ee/YBRpoGH';
@@ -197,6 +202,7 @@
 
     // LINEログイン処理
     function loginWithLine() {
+      // リダイレクト先を今開いているURL（スラッシュ付きの正しいURL）に指定してログイン
       const redirectUri = window.location.origin + window.location.pathname;
       liff.login({ redirectUri: redirectUri });
     }
