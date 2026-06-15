@@ -7,7 +7,7 @@
   
   <!-- 【ファビコン設定】 -->
   <link rel="icon" href="./icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="./icon.png">
+  <link class="apple-touch-icon" href="./icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- LINEログイン用のSDK読み込み -->
@@ -103,6 +103,7 @@
       <p class="text-[10px] text-stone-500 mt-1 uppercase tracking-widest">Timetable & Bulletin Board</p>
     </header>
 
+    <!-- メインコンテンツエリア -->
     <main class="max-w-2xl mx-auto px-4 py-8 space-y-4 w-full flex-1">
 
       <!-- LINEログインカード -->
@@ -121,7 +122,7 @@
         </div>
       </div>
 
-      <!-- テストパーク誘導カード（タップすると別タブを開かず、この中で一瞬でテスト画面に切り替わります） -->
+      <!-- テストパーク誘導カード -->
       <div class="bg-white/15 backdrop-blur-xl p-5 rounded-2xl border border-white/30 shadow-lg animate-card">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="text-center sm:text-left space-y-1">
@@ -131,7 +132,6 @@
             </h3>
             <p class="text-xs text-stone-500">教科書にのっている理科の「顕微鏡の使い方」をテストできます。</p>
           </div>
-          <!-- 青色のテストパークボタン（一瞬で画面切り替えを行います） -->
           <button onclick="startTestFlow()" class="w-full sm:w-auto bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> テストパークへ進む
           </button>
@@ -192,13 +192,10 @@
   <!-- 2. 【画面B】テストダウンロード ＆ カウントダウン（教室背景） -->
   <!-- ========================================================= -->
   <div id="screen-loading" style="display: none;" class="absolute inset-0 bg-[#9cd2e6] z-20 flex flex-col items-center justify-center p-4 screen-fade">
-    <!-- 教室イラスト風背景 -->
     <div class="absolute inset-0 -z-10 flex flex-col justify-end pointer-events-none select-none">
-      <!-- 黒板 -->
       <div class="w-[85%] h-[35%] bg-[#3a594e] border-[8px] border-[#be8353] rounded-md mx-auto mb-10 shadow-lg relative flex items-center justify-center">
         <div class="text-white/10 text-xl font-bold select-none">Welcome to Science Class</div>
       </div>
-      <!-- 机・椅子のシルエット -->
       <div class="h-[20%] w-full bg-[#83a9ba] opacity-60 flex justify-around px-8 items-end pb-2">
         <div class="w-16 h-10 bg-[#cf9e7d] rounded-t border-b-4 border-slate-600"></div>
         <div class="w-16 h-10 bg-[#cf9e7d] rounded-t border-b-4 border-slate-600"></div>
@@ -206,7 +203,7 @@
     </div>
 
     <!-- ダウンロード中モーダル -->
-    <div id="download-modal" class="bg-white rounded-3xl p-8 border border-slate-300 shadow-2xl text-center max-w-md w-full space-y-6 animate-bounce-in">
+    <div id="download-modal" class="bg-white rounded-3xl p-8 border border-slate-300 shadow-2xl text-center max-w-md w-full space-y-6">
       <div class="space-y-2 border-b border-slate-100 pb-3">
         <span class="text-xs font-bold text-white bg-orange-500 px-3 py-1 rounded">理科</span>
         <h2 class="text-base font-bold text-slate-800">顕微鏡の正しい使い方</h2>
@@ -347,7 +344,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- 5. 提出前の「見直し確認」モーダル -->
+  <!-- 4. 提出前の「見直し確認」モーダル -->
   <!-- ========================================================= -->
   <div id="submit-confirm-modal" style="display: none;" class="fixed inset-0 bg-stone-900/15 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white/95 rounded-2xl w-full max-w-sm p-6 shadow-2xl border border-slate-200 text-center space-y-5 animate-card">
@@ -373,7 +370,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- 6. 【設定】ふりがな切り替えモーダル -->
+  <!-- 5. 【設定】ふりがな切り替えモーダル -->
   <!-- ========================================================= -->
   <div id="settings-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white/45 backdrop-blur-2xl rounded-2xl w-full max-w-xs p-6 shadow-2xl border border-white/60 space-y-4 animate-card text-center">
@@ -683,8 +680,6 @@
       }
     };
 
-    let selectedAnswers = Array(quizData.length).fill(null);
-
     // ==========================================
     // 【Web Audio API】内蔵シンセサイザー効果音生成モジュール
     // ==========================================
@@ -858,7 +853,6 @@
       if (!upcomingContainer || !completedContainer) return;
 
       if (!isTestCompleted) {
-        // まだテストをやっていない時の表示（「顕微鏡の使い方」だけを1枚出す）
         upcomingContainer.innerHTML = `
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between transition hover:shadow animate-card">
             <div class="space-y-2 pr-2">
@@ -878,7 +872,6 @@
           </div>
         `;
       } else {
-        // テストを完了した後の表示（これからやるを空にして、実施済みに追加）
         upcomingContainer.innerHTML = `
           <div class="text-center py-10 text-slate-500 text-xs font-bold bg-white/30 border border-dashed border-slate-350 rounded-2xl p-6 animate-card">
             🎉 すべてのテストを完了しました！
@@ -915,7 +908,6 @@
             void toEl.offsetWidth; // リフロー
             toEl.classList.add('screen-active');
             
-            // テスト画面に遷移した場合は、キャンバスをリサイズして初期化
             if (toId === 'screen-test') {
               initCanvas();
             }
@@ -958,7 +950,7 @@
       } catch (err) {
         console.error('LIFF初期化失敗:', err);
       }
-      init(); // 【修正済み】：確実に初期起動を走らせます
+      init(); // 【修正済み】: 確実に初期起動を走らせます
     }
 
     // ふりがな切り替え処理
@@ -1016,7 +1008,6 @@
       ctx.lineJoin = 'round';
     }
 
-    // 疑似ログイン・メモツールのバグ回避
     function toggleTool(mode) {
       playTapSound();
       const btnMemo = document.getElementById('btn-tool-memo');
@@ -1159,13 +1150,13 @@
     // ==========================================
     function startTest() {
       // 【ランダム出題（問題と選択肢を丸ごとシャッフル）】
-      activeQuestions = JSON.parse(JSON.stringify(quizData)); // 元の配列をディープコピーして破壊を防ぐ
+      activeQuestions = JSON.parse(JSON.stringify(quizData)); 
       shuffleArray(activeQuestions);
 
       activeQuestions.forEach(q => {
-        const correctText = q.choices[q.correct]; // シャッフル前の正解テキストを取得
-        shuffleArray(q.choices);                 // 選択肢をシャッフル
-        q.correct = q.choices.indexOf(correctText); // シャッフル後の正解インデックスを自動再マッピング
+        const correctText = q.choices[q.correct]; 
+        shuffleArray(q.choices);                 
+        q.correct = q.choices.indexOf(correctText); 
       });
 
       selectedAnswers = Array(activeQuestions.length).fill(null);
@@ -1505,18 +1496,18 @@
       }
     }
 
+    // 【修正版】：ホームに戻るときに、ホーム（screen-home）に戻るように紐付けを100%徹底しました
     function goHome() {
       playTapSound();
       renderHomeScreen();
       changeScreen('screen-result', 'screen-home', 'flex');
     }
 
-    // 【確実に一瞬で起動する初期化処理（フェイルセーフ対応）】
+    // 【修正後の初期化処理】：ここで確実に画面を描画します
     function init() {
       renderHomeScreen(); 
     }
 
-    // 起動開始
     initLiff();
   </script>
 </body>
