@@ -16,10 +16,6 @@
   <!-- シルエットアイコン用のFontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* シルエットアイコンの色を「濃いグレー・黒」に固定 */
-    .silhouette-icon {
-      color: #1e293b; /* slate-800 */
-    }
     @keyframes boardFade {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -31,7 +27,7 @@
 </head>
 <body class="bg-[#f0f0f2] text-stone-800 min-h-screen relative overflow-x-hidden">
 
-  <!-- 【Liquid Glass】背景を透過してゆらめく液体グラデーション（色彩を少し鮮やかにして透明感を強調） -->
+  <!-- 【Liquid Glass】背景を透過してゆらめく液体グラデーション -->
   <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none select-none">
     <div class="absolute top-[8%] left-[5%] w-[400px] h-[400px] rounded-full bg-blue-300/40 blur-[90px]"></div>
     <div class="absolute bottom-[10%] right-[2%] w-[500px] h-[500px] rounded-full bg-amber-200/40 blur-[100px]"></div>
@@ -47,25 +43,45 @@
   </header>
 
   <!-- メインレイアウト -->
-  <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
+  <main class="max-w-2xl mx-auto px-4 py-8 space-y-4">
 
-    <!-- 【LINEログインカード】 -->
+    <!-- ①【LINEログインカード】 -->
     <div id="auth-status-card" class="bg-white/15 backdrop-blur-xl p-5 rounded-2xl border border-white/30 shadow-lg animate-card">
       <div id="status-card-inner" class="flex flex-col sm:flex-row items-center justify-between gap-4 animate-card">
         <div class="text-center sm:text-left space-y-1">
-          <h3 class="font-bold text-sm text-stone-900">LINEログイン</h3>
+          <h3 class="font-bold text-sm text-stone-900 flex items-center justify-center sm:justify-start gap-2">
+            <i class="fa-brands fa-line text-[#06C755] text-base"></i>
+            <span>LINEログイン</span>
+          </h3>
           <p class="text-xs text-stone-500">ログインすると、これまでの通算ログイン回数がカウントされます。</p>
         </div>
-        <button onclick="loginWithLine()" class="w-full sm:w-auto bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
+        <button onclick="loginWithLine()" class="w-full sm:w-auto bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
           <i class="fa-brands fa-line text-base"></i> LINEでログインする
         </button>
       </div>
     </div>
+
+    <!-- ②【テストパーク誘導カード】（LINEログインのすぐ真下に配置・ブルーカラー） -->
+    <div class="bg-white/15 backdrop-blur-xl p-5 rounded-2xl border border-white/30 shadow-lg animate-card">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-center sm:text-left space-y-1">
+          <h3 class="font-bold text-sm text-stone-900 flex items-center justify-center sm:justify-start gap-2">
+            <i class="fa-solid fa-graduation-cap text-[#0284c7] text-base"></i>
+            <span>テストパーク</span>
+          </h3>
+          <p class="text-xs text-stone-500">教科書にのっている理科の「顕微鏡の使い方」をテストできます。</p>
+        </div>
+        <!-- ブルーのテストパークボタン -->
+        <a id="microscope-drill-link" href="#" target="_blank" class="w-full sm:w-auto bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition duration-200 active:scale-95 shadow-md shrink-0">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> テストパークへ
+        </a>
+      </div>
+    </div>
     
-    <!-- 時間割上部バー -->
-    <div class="flex justify-between items-center bg-white/15 backdrop-blur-xl p-4 rounded-2xl border border-white/30 shadow-lg animate-card">
+    <!-- ③時間割上部バー（インディゴカラー） -->
+    <div class="flex justify-between items-center bg-white/15 backdrop-blur-xl p-4 rounded-2xl border border-white/30 shadow-lg animate-card mt-2">
       <h2 class="font-bold text-sm text-stone-800 flex items-center gap-2">
-        <i class="fa-solid fa-calendar silhouette-icon"></i> 時間割の確認
+        <i class="fa-solid fa-calendar text-[#6366f1] text-sm"></i> 時間割の確認
       </h2>
       
       <!-- 切り替え用モノトーンボタン（半透明ガラスデザイン） -->
@@ -80,25 +96,25 @@
       <p class="text-stone-400 italic text-center py-12">データを読み込み中...</p>
     </div>
 
-    <!-- 中段：過去の履歴をひらくボタン -->
+    <!-- ④中段：過去の履歴をひらくボタン（オレンジカラー） -->
     <div class="text-center pt-2 animate-card">
-      <button onclick="openHistoryModal()" class="inline-flex items-center gap-2 bg-white/25 backdrop-blur-md border border-stone-300 hover:bg-white/40 text-stone-850 font-bold text-xs px-6 py-3.5 rounded-xl shadow-lg transition duration-200 active:scale-95">
-        <i class="fa-solid fa-clock-rotate-left silhouette-icon"></i> 過去の連絡履歴を見る
+      <button onclick="openHistoryModal()" class="w-full bg-white/25 backdrop-blur-md border border-white/30 hover:bg-white/40 text-stone-850 font-bold text-xs px-6 py-3.5 rounded-xl shadow-lg transition duration-200 active:scale-95 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-clock-rotate-left text-orange-500 text-sm"></i> 過去の連絡履歴を見る
       </button>
     </div>
 
-    <!-- 最下部：LINE版をひらくセクション -->
+    <!-- 最下部：LINE公式アカウントセクション（グリーンカラー） -->
     <section class="mt-4 animate-card">
       <div class="bg-white/15 backdrop-blur-xl p-6 rounded-2xl border border-white/30 shadow-lg text-center space-y-3">
         <h3 class="font-bold text-stone-800 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-          <i class="fa-brands fa-line silhouette-icon text-lg"></i> LINE公式アカウント連携
+          <i class="fa-brands fa-line text-[#06C755] text-lg"></i> LINE公式アカウント連携
         </h3>
         <p class="text-xs text-stone-500 max-w-md mx-auto">
           LINEから時間割の自動応答機能や、最新のお知らせの通知を受け取りたい場合は、以下のボタンから公式アカウントにアクセスしてください。
         </p>
         <div class="pt-2">
-          <!-- LINEを開くボタン（直接LINEアプリを呼び出すディープリンクを設定済み） -->
-          <a id="line-link" href="https://line.me/R/ti/p/@613murqr" target="_blank" class="inline-flex items-center gap-2 bg-stone-900/70 hover:bg-stone-850/70 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
+          <!-- LINEを開くボタン -->
+          <a id="line-link" href="https://line.me/R/ti/p/@613murqr" target="_blank" class="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-md transition duration-200 active:scale-95">
             <i class="fa-brands fa-line text-sm"></i> LINE版をひらく
           </a>
         </div>
@@ -106,48 +122,6 @@
     </section>
 
   </main>
-
-  <!-- ログインカレンダーモーダル（リキッドグラス仕様） -->
-  <div id="calendar-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-white/25 backdrop-blur-2xl rounded-2xl w-full max-w-sm flex flex-col shadow-2xl border border-white/45 overflow-hidden animate-card">
-      
-      <!-- カレンダーのヘッダー -->
-      <div class="bg-white/25 border-b border-white/20 px-5 py-4 flex items-center justify-between">
-        <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2.5">
-          <i class="fa-solid fa-calendar-days silhouette-icon"></i> ログインカレンダー
-        </h3>
-        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition active:scale-90">
-          <i class="fa-solid fa-xmark text-lg text-stone-600"></i>
-        </button>
-      </div>
-
-      <!-- カレンダーコンテンツ部分 -->
-      <div class="p-5 space-y-4">
-        <div class="flex justify-between items-center px-1">
-          <span id="calendar-title" class="font-extrabold text-sm text-stone-850">取得中...</span>
-          <span class="text-[10px] text-emerald-600 font-extrabold bg-white/30 px-2.5 py-0.5 rounded border border-white/30 shadow-sm">スタンプカード</span>
-        </div>
-
-        <!-- 曜日 -->
-        <div class="grid grid-cols-7 text-center text-[10px] font-bold text-stone-400 border-b border-white/20 pb-2">
-          <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
-        </div>
-
-        <!-- 日付グリッド -->
-        <div id="calendar-grid" class="grid grid-cols-7 gap-y-1 text-center font-bold">
-          <!-- JSでレンダリングします -->
-        </div>
-      </div>
-
-      <!-- カレンダーのフッター -->
-      <div class="bg-white/25 border-t border-white/20 px-5 py-3 text-right">
-        <button onclick="closeHistoryModal()" class="bg-stone-200/50 hover:bg-stone-300/60 text-stone-800 font-bold text-xs px-4 py-2 rounded-lg transition active:scale-95">
-          閉じる
-        </button>
-      </div>
-
-    </div>
-  </div>
 
   <!-- 過去の履歴モーダル -->
   <div id="history-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -178,8 +152,50 @@
     </div>
   </div>
 
+  <!-- ログインカレンダーモーダル（リキッドグラス仕様） -->
+  <div id="calendar-modal" style="display: none;" class="fixed inset-0 bg-stone-900/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white/25 backdrop-blur-2xl rounded-2xl w-full max-w-sm flex flex-col shadow-2xl border border-white/45 overflow-hidden animate-card">
+      
+      <!-- カレンダーのヘッダー -->
+      <div class="bg-white/25 border-b border-white/20 px-5 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2.5">
+          <i class="fa-solid fa-calendar-days text-[#6366f1] text-xs"></i> ログインカレンダー
+        </h3>
+        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition active:scale-90">
+          <i class="fa-solid fa-xmark text-lg text-stone-600"></i>
+        </button>
+      </div>
+
+      <!-- カレンダーコンテンツ部分 -->
+      <div class="p-5 space-y-4">
+        <div class="flex justify-between items-center px-1">
+          <span id="calendar-title" class="font-extrabold text-sm text-stone-850">取得中...</span>
+          <span class="text-[10px] text-emerald-600 font-extrabold bg-white/30 px-2.5 py-0.5 rounded border border-white/30 shadow-sm">スタンプカード</span>
+        </div>
+
+        <!-- 曜日 -->
+        <div class="grid grid-cols-7 text-center text-[10px] font-bold text-stone-400 border-b border-white/20 pb-2">
+          <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+        </div>
+
+        <!-- 日付グリッド -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-y-1 text-center font-bold">
+          <!-- JSでレンダリングします -->
+        </div>
+      </div>
+
+      <!-- カレンダーのフッター -->
+      <div class="bg-white/25 border-t border-white/20 px-5 py-3 text-right">
+        <button onclick="closeCalendarModal()" class="bg-stone-200/50 hover:bg-stone-300/60 text-stone-800 font-bold text-xs px-4 py-2 rounded-lg transition active:scale-95">
+          閉じる
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
-    // 【URL自動自己修復セキュリティ（本番環境のみ稼働）】
+    // 【URL自動自己修復セキュリティ（本番環境のみ稼働・400エラーを自動で防ぎます）】
     if (window.location.origin === 'https://projector0116-lab.github.io') {
       if (window.location.pathname === '/jikanwarietsuran') {
         window.location.replace('https://projector0116-lab.github.io/jikanwarietsuran/');
@@ -194,9 +210,10 @@
     const LIFF_ID = '2010391463-HL6C04SX';
     const SERVICE_ID = 'class1-3'; 
     const API_KEY = 'XBvrlGnCscCST3Pt6CApexkkbuRJNCG8ZCmq'; 
-    
-    // ディープリンク版のLINE公式アカウントURL
     const LINE_ACCOUNT_URL = 'https://line.me/R/ti/p/@613murqr';
+
+    // 🔬 顕微鏡テストパークの本番URL
+    const MICROSCOPE_TEST_URL = 'https://projector0116-lab.github.io/tesutopaku/';
 
     let timetableData = {};
     let announcementsData = [];
@@ -215,6 +232,12 @@
     }
 
     async function initLiff() {
+      // 顕微鏡テストボタンのリンクを設定
+      const drillLink = document.getElementById('microscope-drill-link');
+      if (drillLink) {
+        drillLink.href = MICROSCOPE_TEST_URL;
+      }
+
       if (!LIFF_ID || LIFF_ID === 'ここにコピーしたLIFF_IDを貼り付け') {
         const statusCard = document.getElementById('auth-status-card');
         if (statusCard) statusCard.style.display = 'none';
@@ -265,9 +288,9 @@
                 </div>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-xs text-stone-600 font-extrabold bg-white/20 px-3.5 py-1.5 rounded-full border border-white/25 shadow-sm">ログイン ${count}日目</span>
+                <span class="text-xs text-[#6366f1] font-extrabold bg-[#6366f1]/10 px-3.5 py-1.5 rounded-full border border-[#6366f1]/20 shadow-sm">ログイン ${count}日目</span>
                 <div class="flex items-center gap-2">
-                  <button onclick="openCalendarModal()" class="text-[10px] text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition active:scale-95">
+                  <button onclick="openCalendarModal()" class="text-[10px] text-[#6366f1] hover:text-[#4f46e5] font-bold flex items-center gap-1 transition active:scale-95">
                     <i class="fa-solid fa-calendar-days"></i> カレンダー
                   </button>
                   <span class="text-stone-300 text-[10px]">|</span>
@@ -362,6 +385,7 @@
       }
     }
 
+    // 画像保存処理
     async function downloadImage(url, filename, btnElement) {
       if (!url) return;
       
@@ -460,6 +484,7 @@
           <div class="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-2 shadow-lg animate-card relative group overflow-hidden">
             <img src="${imageUrl}" alt="${currentWeek}の時間割" class="w-full h-auto object-contain max-h-[500px] rounded-lg" onclick="window.open('${imageUrl}')">
             
+            <!-- iOSシステムUI風の半透明ガラスダウンロードボタン -->
             <button onclick="downloadImage('${imageUrl}', '${currentWeek}_時間割.png', this)" 
                     class="absolute bottom-4 right-4 bg-white/40 hover:bg-white/70 backdrop-blur-md border border-white/30 shadow-lg rounded-full w-10 h-10 flex items-center justify-center transition-all duration-200 active:scale-90"
                     title="画像をダウンロード">
@@ -502,7 +527,7 @@
         let htmlContent = `
           <div class="flex items-center justify-between border-b border-white/20 pb-2">
             <span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1">
-              <i class="fa-solid fa-bell silhouette-icon text-xs"></i> 掲示
+              <i class="fa-solid fa-bell text-orange-500 text-xs animate-pulse"></i> 掲示
             </span>
             <span class="text-[10px] text-stone-400">${dateStr}</span>
           </div>
