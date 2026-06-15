@@ -3,43 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>顕微鏡テストパーク</title>
+  <title>あらいさん 1-3 クラス連絡ポータル</title>
+  
   <link rel="icon" href="./icon.png" type="image/png">
   <link class="apple-touch-icon" href="./icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
     .glass { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
+    .animate-card { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body class="bg-[#f0f0f2] min-h-screen text-stone-800">
+<body class="bg-[#f0f4f8] text-stone-800 min-h-screen">
   
-  <!-- 背景：リキッドグラス -->
+  <!-- 背景：リキッドグラデーション -->
   <div class="fixed inset-0 -z-10 bg-gradient-to-br from-[#d9f2e6] to-[#b3e5fc] opacity-80"></div>
 
+  <!-- ヘッダー -->
   <header class="bg-white/40 backdrop-blur-xl border-b border-white/30 py-6 text-center shadow-sm">
-    <h1 class="text-xl font-bold flex items-center justify-center gap-3">
-      <img src="./icon.png" class="w-9 h-9 rounded-full shadow-md object-cover">
-      クラス連絡ポータル
+    <h1 class="text-xl font-bold tracking-wider text-stone-900 flex items-center justify-center gap-3">
+      <img src="./icon.png" class="w-9 h-9 rounded-full border border-white/40 shadow-md object-cover">
+      あらいさん 1-3 連絡ポータル
     </h1>
   </header>
 
   <main class="max-w-xl mx-auto px-4 py-8 space-y-6">
-    <!-- ログインカード -->
-    <div id="auth-status-card" class="glass p-5 rounded-3xl shadow-lg border border-white/50">
+
+    <!-- LINEログイン -->
+    <div id="auth-status-card" class="glass p-5 rounded-3xl shadow-lg border border-white/50 animate-card">
       <div id="status-card-inner" class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <h3 class="font-bold text-sm">LINEログイン</h3>
+        <div class="text-center sm:text-left">
+          <h3 class="font-bold text-sm text-stone-900">LINEログイン</h3>
           <p class="text-[10px] text-stone-500">ログインすると通算ログイン回数がカウントされます。</p>
         </div>
-        <button onclick="liff.login()" class="bg-[#06C755] text-white font-bold text-xs py-3.5 px-6 rounded-full shadow-md active:scale-95 transition">LINEでログイン</button>
+        <button onclick="liff.login()" class="bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs py-3.5 px-6 rounded-full shadow-md active:scale-95 transition">LINEでログイン</button>
       </div>
     </div>
 
     <!-- テストパークへ -->
-    <a href="https://projector0116-lab.github.io/tesutopaku/" class="block glass p-6 rounded-3xl shadow-lg border border-white/50 hover:scale-[1.02] transition">
+    <a href="https://projector0116-lab.github.io/tesutopaku/" class="block glass p-6 rounded-3xl shadow-lg border border-white/50 hover:scale-[1.02] transition animate-card">
       <h3 class="font-bold text-sm flex items-center gap-2 mb-1">
         <i class="fa-solid fa-graduation-cap text-[#0284c7]"></i> テストパーク
       </h3>
@@ -47,12 +53,18 @@
     </a>
 
     <!-- LINE公式アカウント -->
-    <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 text-center space-y-3">
-      <h3 class="font-bold text-xs uppercase tracking-wider">LINE公式アカウント連携</h3>
+    <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 text-center space-y-3 animate-card">
+      <h3 class="font-bold text-stone-800 text-xs uppercase tracking-wider">LINE公式アカウント連携</h3>
       <a href="https://line.me/R/ti/p/@613murqr" target="_blank" class="inline-flex items-center gap-2 bg-[#06C755] text-white font-bold text-xs px-6 py-3.5 rounded-full shadow-md active:scale-95 transition">
         <i class="fa-brands fa-line"></i> LINE版をひらく
       </a>
     </div>
+
+    <!-- 作成者表示 -->
+    <footer class="text-center text-[10px] text-stone-400 font-bold pt-4">
+      作成者：安井
+    </footer>
+
   </main>
 
   <script>
@@ -64,7 +76,7 @@
         if (liff.isLoggedIn()) {
           const profile = await liff.getProfile();
           document.getElementById('auth-status-card').innerHTML = `
-            <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center justify-between gap-4 animate-card">
               <div class="flex items-center gap-3">
                 <img src="${profile.pictureUrl}" class="w-10 h-10 rounded-full border border-white/50">
                 <span class="text-sm font-bold">${profile.displayName} さん</span>
